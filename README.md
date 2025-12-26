@@ -1,3 +1,146 @@
+<<<<<<< HEAD
+# TRUSTGRID.AI - Secure the Web: Automated Cyber Risk Assessment Framework
+
+## Overview
+
+A comprehensive Python-based automated cybersecurity testing framework that performs multi-category vulnerability testing, risk ranking, and generates detailed security assessment reports.
+
+## Features
+
+- **15 Vulnerability Categories**: Comprehensive security testing across injection, authentication, API, headers, cryptography, and more
+- **Risk Scoring**: 0-10 scale with Low/Moderate/High/Critical classifications
+- **Automated Reporting**: JSON output and human-readable security reports
+- **Prioritized Recommendations**: Immediate, short-term, and long-term fixes
+- **Web Interface**: User-friendly web UI for URL input and results visualization
+- **CLI Interface**: Command-line tool for automated scanning
+- **Ethical & Safe**: Rate-limited, simulated attacks only on authorized targets
+
+## Installation
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# For Selenium (optional, for advanced testing)
+# Download ChromeDriver or GeckoDriver and add to PATH
+```
+
+## Usage
+
+### CLI Usage
+
+```bash
+# Basic usage
+python main.py --target https://example.com
+
+# With custom output directory
+python main.py --target https://example.com --output ./reports
+
+# Verbose mode
+python main.py --target https://example.com --verbose
+
+# Help
+python main.py --help
+```
+
+### Web Interface
+
+```bash
+# Start web server
+python web_app.py
+
+# Open browser and navigate to http://localhost:5000
+# Enter target URL and start scan
+# View results in real-time with progress tracking
+# Download JSON and Markdown reports
+```
+
+## Output
+
+The tool generates two output files:
+
+1. **JSON Report** (`security_assessment.json`): Machine-readable format with all vulnerability data
+2. **Security Report** (`security_report.md`): Human-readable markdown report
+
+Both files are saved in the `output/` directory (or specified output path).
+
+## Architecture
+
+```
+trustgrid-ai/
+├── main.py                 # CLI entry point
+├── core/
+│   ├── __init__.py
+│   ├── engine.py          # Main scanning engine
+│   ├── http_client.py     # HTTP client with rate limiting
+│   └── config.py          # Configuration management
+├── scanners/
+│   ├── __init__.py
+│   ├── base.py            # Base scanner class
+│   ├── injection.py       # SQL/NoSQL/Command injection
+│   ├── authentication.py  # Auth & authorization tests
+│   ├── xss.py             # Cross-site scripting
+│   ├── api.py             # API security
+│   ├── headers.py         # Security headers
+│   ├── cryptography.py    # TLS/certificate checks
+│   └── ...                # Additional scanners
+├── ranking/
+│   ├── __init__.py
+│   ├── scorer.py          # Risk scoring engine
+│   └── ranker.py          # Vulnerability ranking
+├── reporting/
+│   ├── __init__.py
+│   ├── json_generator.py  # JSON output
+│   └── report_generator.py # Markdown/HTML report
+└── utils/
+    ├── __init__.py
+    └── validators.py      # URL/input validation
+```
+
+## Vulnerability Categories
+
+1. Injection Vulnerabilities (SQL, NoSQL, Command, Template)
+2. Traffic Manipulation & Availability Attacks (simulated)
+3. Spoofing & Impersonation
+4. Authentication & Authorization
+5. Session & Token Security
+6. Cross-Site Attacks (XSS, CSRF, Clickjacking)
+7. API & Backend Security
+8. File & Path Vulnerabilities
+9. Cryptography & Transport
+10. Security Headers & Browser Controls
+11. Configuration & Deployment Issues
+12. Bot, Automation & Abuse Risks
+13. Logging & Monitoring Readiness
+14. Supply Chain & Third-Party Risks
+15. Business Logic Vulnerabilities
+
+## Risk Scoring
+
+- **0-2.9**: Low Risk
+- **3-4.9**: Moderate Risk
+- **5-6.9**: High Risk
+- **7-10**: Critical Risk
+
+## Ethical Guidelines
+
+⚠️ **IMPORTANT**: This tool should ONLY be used on:
+- Websites you own
+- Explicitly authorized test environments
+- Systems with written permission
+
+**NEVER** use this tool on unauthorized systems. All attacks are simulated and rate-limited for safety.
+
+## License
+
+Built for TRUSTGRID.AI Hackathon - HackMind - ARAM ANALYTICS - IG
+
+## Team
+
+TRUSTGRID.AI Security Team
+
+
+=======
 # TG_Aram
 
 
@@ -91,3 +234,4 @@ For open source projects, say how it is licensed.
 
 ## Project status
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+>>>>>>> 8d8edbe356ebecd6ba9f00698ab8578230f781d1
