@@ -1,0 +1,108 @@
+{
+  "metadata": {
+    "target_url": "https://example.com",
+    "scan_timestamp": "2024-01-01T12:00:00Z",
+    "scanner_version": "TRUSTGRID.AI v1.0",
+    "scanner_name": "TRUSTGRID.AI Security Assessment Framework"
+  },
+  "overall_security_rating": {
+    "score": 6.5,
+    "level": "High",
+    "description": "Found 15 vulnerability(ies): 2 Critical, 5 High, 4 Medium, 3 Low, 1 Informational",
+    "severity_breakdown": {
+      "Critical": 2,
+      "High": 5,
+      "Medium": 4,
+      "Low": 3,
+      "Info": 1
+    },
+    "total_vulnerabilities": 15
+  },
+  "ranking": {
+    "total_vulnerabilities": 15,
+    "top_vulnerabilities": [
+      {
+        "rank": 1,
+        "title": "SQL Injection Vulnerability",
+        "severity": "Critical",
+        "risk_score": 9.2,
+        "confidence": 0.8,
+        "location": "GET parameter: id"
+      },
+      {
+        "rank": 2,
+        "title": "Missing Content-Security-Policy Header",
+        "severity": "Medium",
+        "risk_score": 5.0,
+        "confidence": 1.0,
+        "location": "HTTP Response Headers"
+      }
+    ]
+  },
+  "impact_analysis": {
+    "technical_impacts": [
+      {
+        "vulnerability": "SQL Injection Vulnerability",
+        "description": "Attackers could read, modify, or delete database content",
+        "severity": "Critical"
+      }
+    ],
+    "business_impacts": [
+      {
+        "vulnerability": "SQL Injection Vulnerability",
+        "description": "Critical business risk: Potential complete system compromise, data breach, regulatory fines",
+        "severity": "Critical"
+      }
+    ],
+    "summary": "Analysis of 15 vulnerabilities reveals 5 distinct technical impact categories"
+  },
+  "vulnerabilities": [
+    {
+      "title": "SQL Injection Vulnerability",
+      "description": "SQL injection vulnerability detected in parameter 'id'",
+      "severity": "Critical",
+      "confidence": 0.8,
+      "category": "Injection",
+      "location": "GET parameter: id",
+      "evidence": "SQL error pattern detected: SQL syntax.*MySQL",
+      "impact": "Attackers could read, modify, or delete database content",
+      "recommendation": "Use parameterized queries and input validation",
+      "risk_score": 9.2
+    }
+  ],
+  "security_scorecard": {
+    "Injection": {
+      "security_score": 0.8,
+      "risk_level": "Critical",
+      "vulnerability_count": 2,
+      "severity_breakdown": {
+        "critical": 1,
+        "high": 1,
+        "medium": 0,
+        "low": 0,
+        "info": 0
+      }
+    }
+  },
+  "recommendations": {
+    "immediate_fixes": [
+      {
+        "vulnerability": "SQL Injection Vulnerability",
+        "recommendation": "Use parameterized queries and input validation",
+        "priority": "Critical"
+      }
+    ],
+    "short_term_fixes": [
+      {
+        "vulnerability": "Missing Content-Security-Policy Header",
+        "recommendation": "Implement Content-Security-Policy header with appropriate directives",
+        "priority": "Medium"
+      }
+    ],
+    "long_term_fixes": [],
+    "summary": "Prioritize 2 immediate fixes, 4 short-term improvements, and 3 long-term enhancements"
+  }
+}
+
+
+

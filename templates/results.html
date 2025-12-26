@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Results - TRUSTGRID.AI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        .header {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .header .meta {
+            color: #666;
+        }
+        
+        .risk-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .risk-critical { background: #dc3545; color: white; }
+        .risk-high { background: #fd7e14; color: white; }
+        .risk-moderate { background: #ffc107; color: #333; }
+        .risk-low { background: #28a745; color: white; }
+        
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .summary-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .summary-card .label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        .vulnerability-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .vulnerability-item.critical { border-left-color: #dc3545; }
+        .vulnerability-item.high { border-left-color: #fd7e14; }
+        .vulnerability-item.medium { border-left-color: #ffc107; }
+        .vulnerability-item.low { border-left-color: #28a745; }
+        
+        .vulnerability-item h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .vulnerability-item .severity {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .vulnerability-item .description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .vulnerability-item .recommendation {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .vulnerability-item .recommendation strong {
+            color: #667eea;
+        }
+        
+        .actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .vulnerability-item {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .vulnerability-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Modal/Popup Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        
+        .modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .modal-section {
+            margin-bottom: 25px;
+        }
+        
+        .modal-section h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+        
+        .modal-section p {
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .modal-section .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .modal-section .detail-label {
+            font-weight: 600;
+            color: #666;
+            min-width: 150px;
+        }
+        
+        .modal-section .detail-value {
+            color: #333;
+            flex: 1;
+        }
+        
+        .modal-section .evidence-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .modal-section .recommendation-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ Security Assessment Results</h1>
+            <div class="meta">
+                <p><strong>Target:</strong> {{ result.target_url }}</p>
+                <p><strong>Scan ID:</strong> {{ scan_id }}</p>
+                <p><strong>Completed:</strong> {{ result.completed_at }}</p>
+                <p><strong>Scan Time:</strong> {{ "%.2f"|format(result.scan_time) }} seconds</p>
+            </div>
+            {% set rating = json_report.overall_security_rating %}
+            {% if rating %}
+            <div style="margin-top: 15px;">
+                <strong>Overall Risk Level:</strong>
+                <span class="risk-badge risk-{{ rating.level|lower }}">{{ rating.level }}</span>
+                <span style="margin-left: 10px;">Score: {{ rating.score }}/10</span>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="summary">
+            <div class="summary-card">
+                <div class="number">{{ json_report.overall_security_rating.total_vulnerabilities or 0 }}</div>
+                <div class="label">Total Vulnerabilities</div>
+            </div>
+            <div class="summary-card">
+                <div class="number">{{ json_report.overall_security_rating.severity_breakdown.Critical or 0 }}</div>
+                <div class="label">Critical</div>
+            </div>
+            <div class="summary-card">
+                <div class="number">{{ json_report.overall_security_rating.severity_breakdown.High or 0 }}</div>
+                <div class="label">High</div>
+            </div>
+            <div class="summary-card">
+                <div class="number">{{ json_report.overall_security_rating.severity_breakdown.Medium or 0 }}</div>
+                <div class="label">Medium</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Top Vulnerabilities</h2>
+            <p style="color: #666; margin-bottom: 15px;">Click on any vulnerability to view detailed information</p>
+            {% if json_report.ranking and json_report.ranking.top_vulnerabilities %}
+                {% for vuln in json_report.ranking.top_vulnerabilities[:10] %}
+                <div class="vulnerability-item {{ vuln.severity|lower }}" onclick="showVulnerabilityDetails({{ loop.index0 }})">
+                    <h3>{{ vuln.title }}</h3>
+                    <span class="severity risk-{{ vuln.severity|lower }}">{{ vuln.severity }}</span>
+                    <div class="description">
+                        {% set full_vuln = json_report.vulnerabilities|selectattr("title", "equalto", vuln.title)|first %}
+                        {% if full_vuln and full_vuln.description %}
+                            {{ full_vuln.description[:200] }}{% if full_vuln.description|length > 200 %}...{% endif %}
+                        {% else %}
+                            Location: {{ vuln.location }}
+                        {% endif %}
+                    </div>
+                    {% set full_vuln = json_report.vulnerabilities|selectattr("title", "equalto", vuln.title)|first %}
+                    {% if full_vuln and full_vuln.recommendation %}
+                    <div class="recommendation">
+                        <strong>Recommendation:</strong> {{ full_vuln.recommendation[:150] }}{% if full_vuln.recommendation|length > 150 %}...{% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No vulnerabilities found.</p>
+            {% endif %}
+        </div>
+        
+        <div class="actions">
+            <a href="/api/scan/{{ scan_id }}/report/json" class="btn btn-primary" download>Download JSON Report</a>
+            <a href="/api/scan/{{ scan_id }}/report/markdown" class="btn btn-secondary" download>Download Markdown Report</a>
+            <a href="/" class="btn btn-success">New Scan</a>
+        </div>
+    </div>
+    
+    <!-- Vulnerability Details Modal -->
+    <div class="modal-overlay" id="vulnModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 id="modalTitle">Vulnerability Details</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Store vulnerabilities data
+        const vulnerabilities = {{ json_report.vulnerabilities|tojson }};
+        const topVulnerabilities = {{ json_report.ranking.top_vulnerabilities[:10]|tojson if json_report.ranking and json_report.ranking.top_vulnerabilities else '[]'|tojson }};
+        
+        function showVulnerabilityDetails(index) {
+            if (index < 0 || index >= topVulnerabilities.length) return;
+            
+            const topVuln = topVulnerabilities[index];
+            // Find the full vulnerability details by matching title
+            const fullVuln = vulnerabilities.find(v => v.title === topVuln.title);
+            
+            if (!fullVuln) {
+                // Fallback to topVuln if full details not found
+                displayVulnerabilityDetails(topVuln, topVuln);
+            } else {
+                displayVulnerabilityDetails(fullVuln, topVuln);
+            }
+            
+            document.getElementById('vulnModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function displayVulnerabilityDetails(vuln, topVuln) {
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalTitle.textContent = vuln.title || 'Vulnerability Details';
+            
+            // Merge data from topVuln and vuln for best information
+            const rank = (topVuln && topVuln.rank) || vuln.rank;
+            const riskScore = (vuln.risk_score !== undefined) ? vuln.risk_score : (topVuln && topVuln.risk_score);
+            const confidence = (vuln.confidence !== undefined) ? vuln.confidence : (topVuln && topVuln.confidence);
+            const location = (topVuln && topVuln.location) || vuln.location;
+            
+            let html = `
+                <div class="modal-section">
+                    <div class="detail-row">
+                        <span class="detail-label">Severity:</span>
+                        <span class="detail-value">
+                            <span class="severity risk-${(vuln.severity || '').toLowerCase()}">${vuln.severity || 'N/A'}</span>
+                        </span>
+                    </div>
+                    ${rank ? `<div class="detail-row">
+                        <span class="detail-label">Rank:</span>
+                        <span class="detail-value">#${rank}</span>
+                    </div>` : ''}
+                    ${riskScore !== undefined && riskScore !== null ? `<div class="detail-row">
+                        <span class="detail-label">Risk Score:</span>
+                        <span class="detail-value">${riskScore.toFixed(1)}/10</span>
+                    </div>` : ''}
+                    ${confidence !== undefined && confidence !== null ? `<div class="detail-row">
+                        <span class="detail-label">Confidence:</span>
+                        <span class="detail-value">${(confidence * 100).toFixed(0)}%</span>
+                    </div>` : ''}
+                    ${vuln.category ? `<div class="detail-row">
+                        <span class="detail-label">Category:</span>
+                        <span class="detail-value">${vuln.category}</span>
+                    </div>` : ''}
+                    ${location ? `<div class="detail-row">
+                        <span class="detail-label">Location:</span>
+                        <span class="detail-value">${location}</span>
+                    </div>` : ''}
+                </div>
+                
+                ${vuln.description ? `<div class="modal-section">
+                    <h3>Description</h3>
+                    <p>${escapeHtml(vuln.description)}</p>
+                </div>` : ''}
+                
+                ${vuln.impact ? `<div class="modal-section">
+                    <h3>Impact</h3>
+                    <p>${escapeHtml(vuln.impact)}</p>
+                </div>` : ''}
+                
+                ${vuln.evidence ? `<div class="modal-section">
+                    <h3>Evidence</h3>
+                    <div class="evidence-box">${escapeHtml(vuln.evidence)}</div>
+                </div>` : ''}
+                
+                ${vuln.recommendation ? `<div class="modal-section">
+                    <h3>Recommendation</h3>
+                    <div class="recommendation-box">
+                        <p>${escapeHtml(vuln.recommendation)}</p>
+                    </div>
+                </div>` : ''}
+            `;
+            
+            modalBody.innerHTML = html;
+        }
+        
+        function closeModal(event) {
+            if (event && event.target === event.currentTarget) {
+                // Clicked on overlay
+            } else if (!event) {
+                // Called directly (close button)
+            }
+            document.getElementById('vulnModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
+
