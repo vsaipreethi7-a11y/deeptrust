@@ -31,3 +31,4 @@ geckodriver.log
 chromedriver.log
 
 
+node_modules
