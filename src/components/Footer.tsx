@@ -39,10 +39,10 @@ const Footer = () => {
               Revolutionizing contract management with AI-powered analytics and lifecycle management solutions.
             </p>
             <div className="flex gap-3">
-              <a href="#" className="w-10 h-10 grid place-items-center rounded-lg bg-muted/40 hover:bg-primary hover:text-primary-foreground transition-colors"><Linkedin className="w-5 h-5"/></a>
-              <a href="#" className="w-10 h-10 grid place-items-center rounded-lg bg-muted/40 hover:bg-primary hover:text-primary-foreground transition-colors"><Twitter className="w-5 h-5"/></a>
-              <a href="#" className="w-10 h-10 grid place-items-center rounded-lg bg-muted/40 hover:bg-primary hover:text-primary-foreground transition-colors"><Facebook className="w-5 h-5"/></a>
-              <a href="#" className="w-10 h-10 grid place-items-center rounded-lg bg-muted/40 hover:bg-primary hover:text-primary-foreground transition-colors"><Instagram className="w-5 h-5"/></a>
+              <a href="#" className="w-10 h-10 grid place-items-center rounded-lg bg-muted/40 hover:bg-primary hover:text-primary-foreground transition-colors"><Linkedin className="w-5 h-5" /></a>
+              <a href="#" className="w-10 h-10 grid place-items-center rounded-lg bg-muted/40 hover:bg-primary hover:text-primary-foreground transition-colors"><Twitter className="w-5 h-5" /></a>
+              <a href="#" className="w-10 h-10 grid place-items-center rounded-lg bg-muted/40 hover:bg-primary hover:text-primary-foreground transition-colors"><Facebook className="w-5 h-5" /></a>
+              <a href="#" className="w-10 h-10 grid place-items-center rounded-lg bg-muted/40 hover:bg-primary hover:text-primary-foreground transition-colors"><Instagram className="w-5 h-5" /></a>
             </div>
           </div>
 
@@ -85,7 +85,7 @@ const Footer = () => {
               <Button
                 variant="outline"
                 className="flex-1 h-14 px-8 rounded-full border-2 border-primary/30 hover:border-primary/50 hover:bg-primary/5 transition-all duration-300"
-                onClick={() => window.location.href = "tel:+1234567890"}
+                onClick={() => window.location.href = "tel:+919004090839"}
               >
                 <Phone className="w-5 h-5 mr-2" />
                 Call Us

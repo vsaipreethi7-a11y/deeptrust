@@ -262,7 +262,7 @@ const Offerings: React.FC = () => {
           ].map(({ key, label, icon }) => (
             <button
               key={key}
-              onClick={() => setSegment(key as any)}
+              onClick={() => setSegment(key as "enterprises" | "banks" | "sez")}
               className={`px-8 xl:px-10 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2 text-base xl:text-lg ${
                 segment === key
                   ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30"

@@ -1,568 +1,227 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Building2,
-  Globe2,
+  Stethoscope,
+  Scale,
   Landmark,
+  Factory,
+  Plane,
+  Globe2,
   Briefcase,
   ShoppingCart,
-  Truck,
-  ArrowLeftRight,
-  Stethoscope,
-  Factory,
   Crown,
+  Container,
+  FlaskConical,
   CheckCircle2,
-  ArrowRight,
-  LayoutGrid,
+  ArrowRight
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-interface UseCase {
-  title: string;
-  platform: string;
-  description: string;
-  benefit: string;
-}
+const IndustryDomains = () => {
+  const [activeIndustry, setActiveIndustry] = useState(0);
+  const [autoRotate, setAutoRotate] = useState(true);
+  const contentRef = useRef<HTMLDivElement>(null);
 
-interface SubVertical {
-  title: string;
-  description: string;
-  useCases: UseCase[];
-}
+  const industries = [
+    {
+      icon: Landmark,
+      title: "Banking & Financial Services",
+      subtitle: "Risk & Trade Finance",
+      description: "Revolutionize counterparty risk assessment, automate trade finance documentation, and ensure real-time regulatory compliance across global jurisdictions.",
+      features: ["Automated KYC/AML", "Trade Finance Processing", "Credit Risk Modeling"],
+      stat: "40%",
+      statLabel: "Reduction in Risk"
+    },
+    {
+      icon: Container,
+      title: "SEZ & Free Trade Zones",
+      subtitle: "Zone Administration",
+      description: "Digitize regulatory reporting and customs clearance. Ensure end-to-end supply chain provenance to maximize duty benefits and compliance.",
+      features: ["Customs Automation", "Origin Certification", "Regulatory Reporting"],
+      stat: "60%",
+      statLabel: "Faster Clearance"
+    },
+    {
+      icon: Building2,
+      title: "Large Corporates",
+      subtitle: "Treasury & Legal Operations",
+      description: "Centralize global contract management and optimize treasury operations. Gain complete visibility into obligations, liabilities, and liquidity positions.",
+      features: ["Global Contract Repository", "Liquidity Management", "Inter-company Agreements"],
+      stat: "30%",
+      statLabel: "Cost Savings"
+    },
+    {
+      icon: Briefcase,
+      title: "Advisory Services",
+      subtitle: "M&A & Deal Advisory",
+      description: "Accelerate deal velocity with AI-powered virtual data rooms and automated due diligence, closing deals faster with higher accuracy.",
+      features: ["AI Data Rooms", "Automated Due Diligence", "Deal Flow Management"],
+      stat: "2x",
+      statLabel: "Deal Velocity"
+    },
+    {
+      icon: ShoppingCart,
+      title: "B2B Marketplaces",
+      subtitle: "Trust & Transaction",
+      description: "Build a foundation of trust with automated supplier verification, secure escrow services, and smart contract-based transaction settlement.",
+      features: ["Merchant Verification", "Escrow Services", "Dispute Resolution"],
+      stat: "99%",
+      statLabel: "Trust Score"
+    },
+    {
+      icon: Plane,
+      title: "Logistics",
+      subtitle: "Global Movement",
+      description: "Streamline shipping documentation with smart bills of lading. Implement real-time sanctions screening for all goods and parties involved.",
+      features: ["Smart Bills of Lading", "Sanctions Screening", "Cargo Tracking"],
+      stat: "50%",
+      statLabel: "Paperwork Reduced"
+    },
+    {
+      icon: Globe2,
+      title: "Cross-Border Business",
+      subtitle: "International Expansion",
+      description: "Navigate complex international regulations effortlessly. Manage multi-currency transactions, entity governance, and local compliance requirements.",
+      features: ["Entity Management", "Currency Routing", "Local Compliance"],
+      stat: "24/7",
+      statLabel: "Compliance Monitoring"
+    },
+    {
+      icon: FlaskConical,
+      title: "Pharmaceuticals",
+      subtitle: "Life Sciences",
+      description: "Accelerate clinical trials with secure data sharing and ensure rigorous intellectual property protection across collaborative research networks.",
+      features: ["Clinical Data Security", "IP Protection", "Regulatory Submissions"],
+      stat: "100%",
+      statLabel: "Data Integrity"
+    },
+    {
+      icon: Factory,
+      title: "Manufacturing",
+      subtitle: "Supply Chain Assurance",
+      description: "Mitigate supply chain disruptions with deep-tier supplier risk monitoring and automated procurement compliance checks.",
+      features: ["Supplier Risk Mgmt", "Procurement Compliance", "Quality Certification"],
+      stat: "35%",
+      statLabel: "Supply Efficiency"
+    },
+    {
+      icon: Crown,
+      title: "GCC & Sovereign Wealth",
+      subtitle: "National Scale Investment",
+      description: "Secure and monitor massive-scale investments and national infrastructure projects with military-grade data security and immutable audit trails.",
+      features: ["Investment Monitoring", "Sovereign Data Security", "Project Governance"],
+      stat: "Zero",
+      statLabel: "Data Breaches"
+    },
+  ];
 
-interface Vertical {
-  id: string;
-  icon: React.ElementType;
-  title: string;
-  theme: string;
-  challenge: string;
-  useCases: UseCase[];
-  subVerticals?: SubVertical[];
-}
-
-const verticalsData: Vertical[] = [
-  {
-    id: "banking",
-    icon: Landmark,
-    title: "Banking & Financial Services",
-    theme: "Intelligent, compliant, and hyper-efficient financial operations",
-    challenge: "Banks, NBFCs, and fintechs must balance speed, security, and regulatory rigor in an era of digital finance and global capital flows.",
-    useCases: [
-      {
-        title: "AI-Powered Loan & Facility Agreement Review",
-        platform: "DeepFlow™",
-        description: "Instantly analyze credit agreements, security documents, and covenants",
-        benefit: "Reduce legal review from 5 days to 2 hours",
-      },
-      {
-        title: "Real-Time Cross-Border Payment Compliance",
-        platform: "BorderFlow™",
-        description: "Validate transactions against FEMA (India), OFAC, EU sanctions, and repatriation rules",
-        benefit: "Eliminate payment delays and compliance breaches",
-      },
-      {
-        title: "Automated Regulatory Change Monitoring",
-        platform: "GRC Sentinel™",
-        description: "Track updates from RBI, Basel III, FATF, and SEBI; auto-assess impact",
-        benefit: "Avoid ₹100Cr+ fines through proactive adaptation",
-      },
-      {
-        title: "Secure Data Exchange with Regulators",
-        platform: "InsightForge™",
-        description: "Push/pull KYC, transaction logs, and audit reports via encrypted APIs",
-        benefit: "Seamless regulatory reporting with full auditability",
-      },
-    ],
-    subVerticals: [
-      {
-        title: "EPC Contractors & Financial Ops",
-        description: "Managing billion-dollar infrastructure projects with multi-currency flows.",
-        useCases: [
-          {
-            title: "Subcontractor Risk Intelligence",
-            platform: "DeepFlow™",
-            description: "Scans 10,000+ subcontracts for liability caps and penalties",
-            benefit: "Prevent cost overruns & standardize terms",
-          },
-          {
-            title: "Cross-Border Contractor Payouts",
-            platform: "BorderFlow™",
-            description: "Ensures disbursements comply with FEMA and tax treaties",
-            benefit: "Zero compliance penalties & fast settlements",
-          },
-          {
-            title: "Invoice & Milestone Validation",
-            platform: "Pixel-to-Profit™",
-            description: "Digitizes scanned completion certificates for ERP reconciliation",
-            benefit: "Accelerate payment cycles & reduce fraud",
-          },
-        ],
-      },
-      {
-        title: "Mergers & Acquisitions (M&A)",
-        description: "Accelerate due diligence while uncovering hidden liabilities.",
-        useCases: [
-          {
-            title: "VDR Contract Triage",
-            platform: "DeepFlow™",
-            description: "Analyzes 10,000+ agreements for change-of-control and risks",
-            benefit: "Cut deal timeline by 40%",
-          },
-          {
-            title: "Regulatory Risk Mapping",
-            platform: "GRC Sentinel™",
-            description: "Identifies non-compliance in data privacy and permits",
-            benefit: "Avoid acquiring hidden compliance liabilities",
-          },
-          {
-            title: "Post-Merger Playbook Harmonization",
-            platform: "AgenticAI™",
-            description: "Automates novation workflows and clause standardization",
-            benefit: "Day-1 readiness & standardized ops",
-          },
-        ],
-      },
-      {
-        title: "Corporate Restructuring",
-        description: "Navigate complex reorganizations under IBC or Chapter 11.",
-        useCases: [
-          {
-            title: "Creditor Agreement Classification",
-            platform: "DeepFlow™",
-            description: "Categorizes debt instruments by seniority and triggers",
-            benefit: "Accelerate consensus building",
-          },
-          {
-            title: "Asset Transfer Validation",
-            platform: "BorderFlow™",
-            description: "Verifies cross-border asset sales under local regulations",
-            benefit: "Legally compliant asset liquidation",
-          },
-          {
-            title: "Stakeholder Communication",
-            platform: "AgenticAI™",
-            description: "Drafts NCLT filings, creditor notices, and plans",
-            benefit: "Reduce procedural delays & litigation risk",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: "sez",
-    icon: Globe2,
-    title: "SEZ & Free Trade Zones",
-    theme: "Frictionless trade, investment, and compliance",
-    challenge: "SEZ authorities and units need seamless cross-border movement of goods, capital, and contracts—without regulatory friction.",
-    useCases: [
-      {
-        title: "Automated SEZ Unit Agreement Management",
-        platform: "DeepFlow™",
-        description: "Review lease deeds, MOUs, and performance bank guarantees for DTA/SEZ compliance",
-        benefit: "Ensure 100% adherence to SEZ Act",
-      },
-      {
-        title: "Cross-Border Escrow for Export Proceeds",
-        platform: "BorderFlow™",
-        description: "Automate escrow release upon verified shipping document upload via blockchain triggers",
-        benefit: "Faster fund repatriation",
-      },
-      {
-        title: "Unit Compliance Monitoring",
-        platform: "GRC Sentinel™",
-        description: "Track DTA sales limits, export obligations, and labor norms in real time",
-        benefit: "Avoid de-notification of SEZ units",
-      },
-      {
-        title: "Immutable Trade Documentation",
-        platform: "InsightForge™",
-        description: "Store shipping, customs, and tax docs in tamper-proof repositories linked to GSTN",
-        benefit: "Instant audit readiness",
-      },
-    ],
-  },
-  {
-    id: "corporates",
-    icon: Building2,
-    title: "Large Corporates",
-    theme: "Enterprise-wide governance and intelligent contract operations",
-    challenge: "Multinational groups face fragmented systems, regulatory complexity, and supplier risk across dozens of subsidiaries.",
-    useCases: [
-      {
-        title: "Group-Wide GRC Command Center",
-        platform: "GRC Sentinel™",
-        description: "Unified dashboard for policy adherence, whistleblower alerts, and ESG disclosures",
-        benefit: "Single pane of glass for risk oversight",
-      },
-      {
-        title: "Vendor Contract Portfolio Mgmt",
-        platform: "DeepFlow™ + AgenticAI™",
-        description: "Auto-review 50,000+ vendor agreements; agents track renewal dates and SLAs",
-        benefit: "Reduce tail spend leakage by 15–25%",
-      },
-      {
-        title: "Secure Inter-Entity Data Exchange",
-        platform: "InsightForge™",
-        description: "Sync master data, invoices, and compliance certs between group companies",
-        benefit: "Eliminate reconciliation errors",
-      },
-      {
-        title: "Blockchain-Audited Treasury Ops",
-        platform: "Blockchain Data Rooms",
-        description: "Immutable record of intercompany loans, FX hedges, and dividend approvals",
-        benefit: "Streamline statutory audits",
-      },
-    ],
-  },
-  {
-    id: "advisory",
-    icon: Briefcase,
-    title: "Advisory Services",
-    theme: "From advisory to embedded intelligence",
-    challenge: "Law firms, Big 4, and management consultants are transforming into tech-enabled strategic partners.",
-    useCases: [
-      {
-        title: "High-Velocity Client Contract Review",
-        platform: "DeepFlow™",
-        description: "Deliver same-day analysis of client NDAs, JVs, and licensing deals",
-        benefit: "Increase billable throughput by 3x",
-      },
-      {
-        title: "Regulatory Readiness Assessments",
-        platform: "GRC Sentinel™",
-        description: "Offer clients automated gap analysis against GDPR, DPDP Act",
-        benefit: "New compliance-as-a-service revenue",
-      },
-      {
-        title: "Secure Client Data Collaboration",
-        platform: "Blockchain Data Rooms",
-        description: "Share sensitive findings with clients via permissioned repositories",
-        benefit: "Reduce data breach liability",
-      },
-    ],
-  },
-  {
-    id: "marketplaces",
-    icon: ShoppingCart,
-    title: "B2B Marketplaces",
-    theme: "Trust, automation, and global scale",
-    challenge: "Platforms connecting buyers and sellers across borders need embedded compliance, payments, and contract intelligence.",
-    useCases: [
-      {
-        title: "Auto-Generated Marketplace Terms",
-        platform: "DeepFlow™",
-        description: "Dynamically create jurisdiction-aware T&Cs and seller agreements",
-        benefit: "Reduce legal overhead for scaling",
-      },
-      {
-        title: "Cross-Border Escrow with Smart Triggers",
-        platform: "BorderFlow™",
-        description: "Release funds only when shipping docs are validated by OCR",
-        benefit: "Build trust without manual intervention",
-      },
-      {
-        title: "Seller KYC & Onboarding at Scale",
-        platform: "Pixel-to-Profit™",
-        description: "Digitize GSTIN, PAN, bank proofs; validate against AML lists",
-        benefit: "Onboard 10,000 sellers in days",
-      },
-    ],
-  },
-  {
-    id: "logistics",
-    icon: Truck,
-    title: "Logistics & Shipping",
-    theme: "Visibility, compliance, and automation",
-    challenge: "Freight forwarders, shipping lines, and 3PLs manage complex documentation, customs, and payment flows.",
-    useCases: [
-      {
-        title: "AI-Powered Bill of Lading Processing",
-        platform: "Pixel-to-Profit™",
-        description: "Extract consignee, vessel, HS code from scanned docs—even handwritten",
-        benefit: "Cut customs clearance time by 70%",
-      },
-      {
-        title: "Smart Contract Freight Agreements",
-        platform: "DeepFlow™",
-        description: "Auto-execute demurrage penalties or rebate clauses based on IoT/port data",
-        benefit: "Reduce disputes and manual invoicing",
-      },
-      {
-        title: "Payment Switch with Compliance",
-        platform: "BorderFlow™",
-        description: "Route carrier payments via compliant corridors with real-time screening",
-        benefit: "Ensure on-time payouts",
-      },
-    ],
-  },
-  {
-    id: "cross-border",
-    icon: ArrowLeftRight,
-    title: "Cross-Border Business",
-    theme: "Seamless global commerce with built-in compliance",
-    challenge: "SMEs and exporters expanding internationally face documentation, payment, and legal complexity.",
-    useCases: [
-      {
-        title: "Multilingual Int'l Sales Contracts",
-        platform: "DeepFlow™",
-        description: "Generate INCOTERMS-aware agreements in English, Spanish, Arabic, etc.",
-        benefit: "Close deals faster without local counsel",
-      },
-      {
-        title: "FX-Optimized Payments",
-        platform: "BorderFlow™",
-        description: "Recommend lowest-cost, compliant payment rails based on corridor rules",
-        benefit: "Save 2–5% on transaction costs",
-      },
-      {
-        title: "Automated Export Documentation",
-        platform: "Pixel-to-Profit™",
-        description: "Turn commercial invoices into GST e-invoices, Peppol XML, or Fatoora files",
-        benefit: "100% e-invoicing compliance",
-      },
-    ],
-  },
-  {
-    id: "pharma",
-    icon: Stethoscope,
-    title: "Pharmaceuticals",
-    theme: "Securing innovation, compliance, and patient trust",
-    challenge: "Pharma companies operate under intense scrutiny—from clinical trials to cold-chain logistics.",
-    useCases: [
-      {
-        title: "Clinical Trial Agreement Analysis",
-        platform: "DeepFlow™",
-        description: "Extract indemnity, IP ownership, and insurance clauses",
-        benefit: "Accelerate trial startup by 50%",
-      },
-      {
-        title: "Regulatory Submission Management",
-        platform: "InsightForge™",
-        description: "Submit immutable, timestamped dossiers to FDA, EMA with full audit trail",
-        benefit: "Faster drug approvals",
-      },
-      {
-        title: "Supply Chain Integrity Tracking",
-        platform: "Blockchain Data Rooms",
-        description: "Verify temperature logs and authenticity for vaccines/biologics",
-        benefit: "Prevent counterfeit infiltration",
-      },
-      {
-        title: "Research Partner Due Diligence",
-        platform: "GRC Sentinel™",
-        description: "Screen CROs and labs against global sanctions and ethics records",
-        benefit: "Protect brand reputation",
-      },
-      {
-        title: "Intellectual Property Security",
-        platform: "Blockchain Data Rooms",
-        description: "Register patents and formulas on tamper-proof ledgers",
-        benefit: "Enforceable IP rights",
-      },
-    ],
-  },
-  {
-    id: "manufacturing",
-    icon: Factory,
-    title: "Manufacturing",
-    theme: "Intelligent supply chains and capital efficiency",
-    challenge: "From automotive to electronics, manufacturers need resilient, compliant, and agile operations.",
-    useCases: [
-      {
-        title: "Supplier Risk Intelligence",
-        platform: "DeepFlow™ + GRC Sentinel™",
-        description: "Monitor 10,000+ supplier contracts for force majeure and ESG clauses",
-        benefit: "Avoid production halts",
-      },
-      {
-        title: "Import/Export Doc Automation",
-        platform: "Pixel-to-Profit™",
-        description: "Process BoL, CoO, and invoices; auto-validate against customs rules",
-        benefit: "Clear shipments in hours",
-      },
-      {
-        title: "ESG & BRSR Reporting",
-        platform: "GRC Sentinel™",
-        description: "Aggregate emissions, waste, and labor data; auto-generate reports",
-        benefit: "Meet investor mandates effortlessly",
-      },
-      {
-        title: "Secure Global Vendor Payments",
-        platform: "BorderFlow™",
-        description: "Automate compliant cross-border payments to component suppliers",
-        benefit: "Optimize working capital and FX costs",
-      },
-    ],
-  },
-  {
-    id: "gcc",
-    icon: Crown,
-    title: "GCC & Sovereign Wealth",
-    theme: "Strategic investments with zero-risk tolerance",
-    challenge: "Government-related entities and SWFs manage high-value assets across jurisdictions with zero tolerance for risk.",
-    useCases: [
-      {
-        title: "Portfolio Company GRC Oversight",
-        platform: "GRC Sentinel™",
-        description: "Monitor investee companies for anti-bribery, sanctions, and ESG compliance",
-        benefit: "Protect national reputation",
-      },
-      {
-        title: "Cross-Border Investment Docs",
-        platform: "DeepFlow™",
-        description: "Securely store SPAs and shareholder agreements with immutable version control",
-        benefit: "Streamline audits",
-      },
-      {
-        title: "Trusted Regulatory Data Exchange",
-        platform: "InsightForge™",
-        description: "Share anonymized portfolio data with IMF or central banks via secure APIs",
-        benefit: "Demonstrate transparency securely",
-      },
-      {
-        title: "AI-Driven Due Diligence",
-        platform: "AgenticAI™",
-        description: "Autonomous agents scan news and filings on acquisition targets",
-        benefit: "Uncover reputational risks pre-investment",
-      },
-    ],
-  },
-];
-
-const UseCaseCard = ({ useCase }: { useCase: UseCase }) => (
-  <div className="bg-card/40 backdrop-blur-sm rounded-xl p-5 border border-white/5 hover:border-primary/40 hover:bg-card/60 transition-all duration-300 group h-full flex flex-col justify-between">
-    <div>
-      <div className="flex items-start justify-between gap-4 mb-3">
-        <h4 className="font-bold text-foreground text-sm md:text-base leading-tight group-hover:text-primary transition-colors">
-          {useCase.title}
-        </h4>
-      </div>
-      
-      <div className="mb-4">
-         <span className="inline-flex items-center text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary px-2 py-1 rounded-sm border border-primary/20">
-          {useCase.platform}
-        </span>
-      </div>
-
-      <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-        {useCase.description}
-      </p>
-    </div>
-    
-    <div className="flex items-center gap-2 text-xs md:text-sm font-semibold text-emerald-500 pt-4 border-t border-white/5">
-      <CheckCircle2 size={16} className="shrink-0" />
-      <span>{useCase.benefit}</span>
-    </div>
-  </div>
-);
-
-const IndustryDomains: React.FC = () => {
-  const [activeTab, setActiveTab] = useState(verticalsData[0].id);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  const activeVertical = verticalsData.find(v => v.id === activeTab) || verticalsData[0];
-
-  const handleVerticalChange = (id: string, index: number) => {
-    setActiveTab(id);
-    
-    if (scrollContainerRef.current) {
-      const container = scrollContainerRef.current;
-      const buttons = container.querySelectorAll('button');
-      if (buttons[index]) {
-        const button = buttons[index] as HTMLElement;
-        button.scrollIntoView({
-          behavior: 'smooth',
-          block: 'nearest',
-          inline: 'center'
-        });
-      }
-    }
+  const handleIndustryClick = (index: number) => {
+    setActiveIndustry(index);
+    setAutoRotate(false);
   };
 
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (autoRotate) {
+      interval = setInterval(() => {
+        setActiveIndustry((prev) => (prev + 1) % industries.length);
+      }, 5000); // Rotate every 5 seconds
+    }
+    return () => clearInterval(interval);
+  }, [autoRotate, industries.length]);
+
   return (
-    <section id="verticals" className="py-24 bg-gradient-to-b from-background via-background/95 to-primary/5 relative overflow-hidden">
-      <div className="container mx-auto px-4 relative z-10">
-        
-        {/* Header Section */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center justify-center px-4 py-1.5 mb-6 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-sm">
-            <span className="text-sm font-semibold text-primary uppercase tracking-wide">
-              DeepTrust Verticals
-            </span>
-          </div>
-          <h2 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-primary via-blue-500 to-purple-600 bg-clip-text text-transparent mb-6">
-            Industries We Serve
+    <section id="verticals" className="py-24 bg-gradient-to-b from-background to-muted/20">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-16 animate-fade-in-up">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+            Industries We <span className="text-primary">Transform</span>
           </h2>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            DeepTrust delivers specialized, high-impact solutions tailored to the unique regulatory and operational challenges of critical global sectors.
+          </p>
         </div>
 
-        {/* Tabs Layout */}
-        <div className="flex flex-col gap-10">
-          
-          {/* Top Navigation - Horizontal Scroll */}
-          <div className="sticky top-20 z-30 bg-background/80 backdrop-blur-xl py-4 border-b border-white/10 -mx-4 px-4 md:mx-0 md:px-0 md:border-none md:bg-transparent">
-            <div 
-              ref={scrollContainerRef}
-              className="flex overflow-x-auto pb-2 gap-3 no-scrollbar scroll-smooth px-1"
-            >
-              {verticalsData.map((vertical, index) => (
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 max-w-7xl mx-auto">
+          {/* Left Side: Headings List */}
+          <div className="lg:w-1/3 space-y-2">
+            <div className="bg-card/50 backdrop-blur-sm rounded-2xl border border-border/50 p-2 overflow-hidden shadow-lg h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+              {industries.map((industry, index) => (
                 <button
-                  key={vertical.id}
-                  onClick={() => handleVerticalChange(vertical.id, index)}
-                  className={cn(
-                    "flex items-center gap-2 px-5 py-2.5 rounded-full border transition-all duration-300 whitespace-nowrap shrink-0 font-medium text-sm",
-                    activeTab === vertical.id 
-                      ? "bg-primary text-primary-foreground border-primary shadow-[0_0_20px_rgba(var(--primary),0.3)] scale-105" 
-                      : "bg-card border-border hover:border-primary/50 hover:bg-muted text-muted-foreground hover:text-foreground"
-                  )}
+                  key={index}
+                  onClick={() => handleIndustryClick(index)}
+                  className={`w-full text-left p-4 rounded-xl transition-all duration-300 flex items-center gap-4 group ${activeIndustry === index
+                      ? "bg-primary text-primary-foreground shadow-md scale-[1.02]"
+                      : "hover:bg-accent hover:text-accent-foreground text-muted-foreground"
+                    }`}
                 >
-                  <vertical.icon size={16} />
-                  <span>{vertical.title}</span>
+                  <industry.icon className={`w-5 h-5 flex-shrink-0 ${activeIndustry === index ? "text-primary-foreground" : "text-primary"}`} />
+                  <span className={`font-semibold text-sm md:text-base ${activeIndustry === index ? "translate-x-1" : "group-hover:translate-x-1"} transition-transform duration-300`}>
+                    {industry.title}
+                  </span>
+                  {activeIndustry === index && (
+                    <ArrowRight className="w-4 h-4 ml-auto animate-pulse" />
+                  )}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Content Panel */}
-          <div className="min-h-[500px]">
-            <div 
-              key={activeVertical.id}
-              className="bg-card/30 backdrop-blur-xl border border-white/10 rounded-[2rem] p-6 md:p-12 shadow-2xl animate-in fade-in slide-in-from-bottom-6 duration-500"
-            >
-              {/* Vertical Header */}
-              <div className="max-w-4xl mx-auto mb-12 text-center border-b border-white/10 pb-8">
-                <h3 className="text-3xl md:text-5xl font-bold text-foreground mb-4 tracking-tight">
-                  {activeVertical.title}
-                </h3>
-                <p className="text-xl md:text-2xl text-primary/90 font-medium italic">
-                  "{activeVertical.theme}"
-                </p>
-              </div>
-
-              {/* Core Use Cases Grid */}
-              <div className="max-w-7xl mx-auto space-y-16">
-                {/* Main Vertical Use Cases */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-8">
-                  {activeVertical.useCases.map((useCase, idx) => (
-                    <UseCaseCard key={idx} useCase={useCase} />
-                  ))}
-                </div>
-
-                {/* Sub-Verticals Sections */}
-                {activeVertical.subVerticals?.map((sub, sIdx) => (
-                  <div key={sIdx} className="pt-8 border-t border-white/10">
-                     <div className="flex items-center gap-3 mb-8 justify-center md:justify-start">
-                        <div className="h-8 w-1.5 rounded-full bg-primary" />
-                        <h4 className="text-2xl md:text-3xl font-bold text-foreground">
-                          {sub.title}
-                        </h4>
-                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                      {sub.useCases.map((useCase, uIdx) => (
-                        <UseCaseCard key={uIdx} useCase={useCase} />
-                      ))}
+          {/* Right Side: Content Display */}
+          <div className="lg:w-2/3">
+            <div className="relative h-full min-h-[500px]">
+              {industries.map((industry, index) => (
+                <div
+                  key={index}
+                  className={`absolute inset-0 transition-all duration-500 ease-in-out ${activeIndustry === index
+                      ? "opacity-100 translate-x-0 z-10"
+                      : "opacity-0 translate-x-8 z-0 pointer-events-none"
+                    }`}
+                >
+                  <Card className="h-full border-border/50 bg-card/80 backdrop-blur-md shadow-2xl overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
+                      <industry.icon className="w-64 h-64 text-primary rotate-12" />
                     </div>
-                  </div>
-                ))}
-              </div>
+
+                    <CardContent className="p-8 md:p-12 relative z-10 flex flex-col h-full justify-center">
+                      <div className="mb-6 inline-flex p-4 rounded-2xl bg-primary/10 text-primary w-fit">
+                        <industry.icon className="w-10 h-10" />
+                      </div>
+
+                      <h3 className="text-3xl md:text-4xl font-bold mb-2">{industry.title}</h3>
+                      <p className="text-xl text-primary font-medium mb-6">{industry.subtitle}</p>
+
+                      <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-2xl">
+                        {industry.description}
+                      </p>
+
+                      <div className="grid sm:grid-cols-2 gap-6 mb-8">
+                        <div className="space-y-4">
+                          <h4 className="font-semibold text-foreground/80 uppercase tracking-wider text-sm">Key Capabilities</h4>
+                          <ul className="space-y-3">
+                            {industry.features.map((feature, i) => (
+                              <li key={i} className="flex items-center gap-3 text-muted-foreground">
+                                <CheckCircle2 className="w-5 h-5 text-primary flex-shrink-0" />
+                                <span>{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div className="bg-primary/5 rounded-2xl p-6 flex flex-col justify-center items-center text-center border border-primary/10">
+                          <span className="text-4xl font-extrabold text-primary mb-1">{industry.stat}</span>
+                          <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{industry.statLabel}</span>
+                        </div>
+                      </div>
+
+                      <Button className="w-fit group-hover:translate-x-2 transition-transform duration-300">
+                        Explore {industry.title} Solutions <ArrowRight className="ml-2 w-4 h-4" />
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
             </div>
           </div>
         </div>

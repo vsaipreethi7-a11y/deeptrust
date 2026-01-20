@@ -298,13 +298,13 @@ const Navigation = () => {
         {isOpen && (
           <div className="lg:hidden pb-6 animate-fade-in border-t border-border/50 mt-2 bg-background/95 backdrop-blur-md">
             <div className="flex flex-col space-y-1 pt-4 px-2">
-              <button onClick={(e) => handleLinkClick(e as any, "outcomes")} className="text-left py-3 px-4 hover:bg-accent rounded-md font-medium">Outcomes</button>
-              <button onClick={(e) => handleLinkClick(e as any, "verticals")} className="text-left py-3 px-4 hover:bg-accent rounded-md font-medium">Verticals</button>
-              <button onClick={(e) => handleLinkClick(e as any, "offerings")} className="text-left py-3 px-4 hover:bg-accent rounded-md font-medium">Offerings</button>
-              <button onClick={(e) => handleLinkClick(e as any, "platforms")} className="text-left py-3 px-4 hover:bg-accent rounded-md font-medium">Platforms</button>
-              <button onClick={(e) => handleLinkClick(e as any, "solutions")} className="text-left py-3 px-4 hover:bg-accent rounded-md font-medium">Solutions</button>
-              <button onClick={(e) => handleLinkClick(e as any, "technology")} className="text-left py-3 px-4 hover:bg-accent rounded-md font-medium">Technology</button>
-              <button onClick={(e) => handleLinkClick(e as any, "about-us")} className="text-left py-3 px-4 hover:bg-accent rounded-md font-medium">About Us</button>
+              <button onClick={(e) => handleLinkClick(e, "outcomes")} className="text-left py-3 px-4 hover:bg-accent rounded-md font-medium">Outcomes</button>
+              <button onClick={(e) => handleLinkClick(e, "verticals")} className="text-left py-3 px-4 hover:bg-accent rounded-md font-medium">Verticals</button>
+              <button onClick={(e) => handleLinkClick(e, "offerings")} className="text-left py-3 px-4 hover:bg-accent rounded-md font-medium">Offerings</button>
+              <button onClick={(e) => handleLinkClick(e, "platforms")} className="text-left py-3 px-4 hover:bg-accent rounded-md font-medium">Platforms</button>
+              <button onClick={(e) => handleLinkClick(e, "solutions")} className="text-left py-3 px-4 hover:bg-accent rounded-md font-medium">Solutions</button>
+              <button onClick={(e) => handleLinkClick(e, "technology")} className="text-left py-3 px-4 hover:bg-accent rounded-md font-medium">Technology</button>
+              <button onClick={(e) => handleLinkClick(e, "about-us")} className="text-left py-3 px-4 hover:bg-accent rounded-md font-medium">About Us</button>
             </div>
           </div>
         )}

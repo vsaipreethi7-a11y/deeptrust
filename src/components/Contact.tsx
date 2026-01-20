@@ -1,41 +1,158 @@
 import { useState } from "react";
-import { Mail, Phone, MapPin, Send, MessageCircle } from "lucide-react";
+import { Mail, Phone, MapPin, Send, MessageCircle, User, Briefcase, Building, Globe, MessageSquare, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
 const Contact = () => {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
+    fullName: "",
     email: "",
-    company: "",
+    companyName: "",
+    designation: "",
+    contactNumber: "",
+    location: "",
+    serviceInterest: "",
+    referralSource: "",
     message: "",
+    agreed: false,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Create message with form data
-    const message = `Hello, my name is ${formData.name}. ${formData.company ? `I'm from ${formData.company}. ` : ''}${formData.message}. Contact me at ${formData.email}`;
-    
-    // Redirect to WhatsApp
-    const whatsappURL = `https://wa.me/919513088611?text=${encodeURIComponent(message)}`;
-    window.open(whatsappURL, "_blank");
-    
-    // Show toast
-    toast({
-      title: "Redirecting to WhatsApp!",
-      description: "Opening WhatsApp with your message...",
-    });
-    
-    setFormData({ name: "", email: "", company: "", message: "" });
+
+    if (!formData.agreed) {
+      toast({
+        title: "Agreement Required",
+        description: "Please agree to the Privacy Policy and Terms & Conditions.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const AIRTABLE_API_KEY = import.meta.env.VITE_AIRTABLE_API_KEY;
+      const AIRTABLE_BASE_ID = import.meta.env.VITE_AIRTABLE_BASE_ID;
+      const AIRTABLE_TABLE_NAME = import.meta.env.VITE_AIRTABLE_TABLE_NAME || "Inquiries";
+
+      if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
+        console.warn("Airtable credentials missing.");
+        toast({
+          title: "Configuration Missing",
+          description: "Ideally this would save to Airtable, but credentials are not set in .env",
+          variant: "destructive"
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Map form values to human-readable labels for Airtable Single Select fields
+      const serviceMap: Record<string, string> = {
+        "due_diligence": "Automated Due Diligence",
+        "contract_review": "Contract Review",
+        "compliance": "Compliance Automation",
+        "other": "Other"
+      };
+
+      const sourceMap: Record<string, string> = {
+        "linkedin": "LinkedIn",
+        "google": "Google Search",
+        "referral": "Client Referral",
+        "social_media": "Social Media",
+        "other": "Other"
+      };
+
+      const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${AIRTABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          records: [
+            {
+              fields: {
+                "Name": formData.fullName,
+                "Email": formData.email,
+                "Company": formData.companyName,
+                "Designation": formData.designation,
+                "Phone": formData.contactNumber,
+                "Location": formData.location,
+                "Service Interest": serviceMap[formData.serviceInterest] || formData.serviceInterest,
+                "Source": sourceMap[formData.referralSource] || formData.referralSource,
+                "Message": formData.message,
+                "Status": "New"
+              }
+            }
+          ],
+          typecast: true // This is crucial! It allows creating new select options if they don't exist
+        }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Inquiry Sent Successfully!",
+          description: "Thank you for reaching out. We will get back to you shortly.",
+        });
+
+        // Reset form
+        setFormData({
+          fullName: "",
+          email: "",
+          companyName: "",
+          designation: "",
+          contactNumber: "",
+          location: "",
+          serviceInterest: "",
+          referralSource: "",
+          message: "",
+          agreed: false,
+        });
+      } else {
+        const errorData = await response.json();
+        console.error("Airtable submission error:", JSON.stringify(errorData, null, 2));
+        toast({
+          title: "Submission Failed",
+          description: "Something went wrong. Please try again later.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error("Failed to submit to Airtable:", error);
+      toast({
+        title: "Connection Error",
+        description: "Could not connect to the server. Please check your internet connection.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleCheckboxChange = (checked: boolean) => {
+    setFormData({ ...formData, agreed: checked });
   };
 
   return (
@@ -43,110 +160,81 @@ const Contact = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 animate-fade-in-up">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Get in <span className="text-primary">Touch</span>
+            Connect <span className="text-primary">With Us</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Ready to transform your contract management? Let's discuss how we can help
+            Ready to transform your contract management? Let's discuss requirements
           </p>
         </div>
 
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12">
-          {/* Contact Information */}
-          <div className="space-y-8 animate-fade-in-up">
-            <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-card transition-all duration-300">
-              <CardContent className="p-8">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-primary/10 text-primary">
-                    <Mail className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg mb-2">Email Us</h3>
-                    <p className="text-muted-foreground">info@trustgrid.com</p>
-                    <p className="text-muted-foreground">support@trustgrid.com</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        {/* Contact Info Cards */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16 animate-fade-in-up">
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-card transition-all duration-300">
+            <CardContent className="p-6 flex flex-col items-center text-center">
+              <div className="p-3 rounded-xl bg-primary/10 text-primary mb-4">
+                <Mail className="w-6 h-6" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">Email Us</h3>
+              <p className="text-muted-foreground text-sm">Sanat@deeptrust.in</p>
+            </CardContent>
+          </Card>
 
-            <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-card transition-all duration-300 cursor-pointer">
-              <CardContent className="p-8">
-                <a
-                  href="tel:+919513088611"
-                  className="flex items-start gap-4 hover:opacity-80 transition-opacity"
-                >
-                  <div className="p-3 rounded-xl bg-primary/10 text-primary">
-                    <Phone className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg mb-2">Call Us</h3>
-                    <p className="text-muted-foreground hover:text-primary transition-colors">+91 95130 88611</p>
-                  </div>
-                </a>
-              </CardContent>
-            </Card>
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-card transition-all duration-300 cursor-pointer" onClick={() => window.location.href = "tel:+919004090839"}>
+            <CardContent className="p-6 flex flex-col items-center text-center">
+              <div className="p-3 rounded-xl bg-primary/10 text-primary mb-4">
+                <Phone className="w-6 h-6" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">Call Us</h3>
+              <p className="text-muted-foreground text-sm hover:text-primary transition-colors">+91 90040 90839</p>
+            </CardContent>
+          </Card>
 
-            <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-card transition-all duration-300">
-              <CardContent className="p-8">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-green-500/10 text-green-500">
-                    <MessageCircle className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg mb-2">WhatsApp</h3>
-                    <a
-                      href="https://wa.me/919513088611"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-green-500 hover:text-green-600 transition-colors font-medium"
-                    >
-                      +91 95130 88611
-                    </a>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-card transition-all duration-300 cursor-pointer" onClick={() => window.open("https://wa.me/919004090839", "_blank")}>
+            <CardContent className="p-6 flex flex-col items-center text-center">
+              <div className="p-3 rounded-xl bg-green-500/10 text-green-500 mb-4">
+                <MessageCircle className="w-6 h-6" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">WhatsApp</h3>
+              <p className="text-green-500 text-sm font-medium">+91 90040 90839</p>
+            </CardContent>
+          </Card>
 
-            <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-card transition-all duration-300">
-              <CardContent className="p-8">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-primary/10 text-primary">
-                    <MapPin className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg mb-2">Visit Us</h3>
-                    <p className="text-muted-foreground">123 AI Technology Drive</p>
-                    <p className="text-muted-foreground">San Francisco, CA 94105</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:shadow-card transition-all duration-300">
+            <CardContent className="p-6 flex flex-col items-center text-center">
+              <div className="p-3 rounded-xl bg-primary/10 text-primary mb-4">
+                <MapPin className="w-6 h-6" />
+              </div>
+              <h3 className="font-bold text-lg mb-2">Visit Us</h3>
+              <p className="text-muted-foreground text-sm">123 AI Technology Drive<br />San Francisco, CA 94105</p>
+            </CardContent>
+          </Card>
+        </div>
 
-            {/* Removed "Why Choose" list block per request */}
-          </div>
-
-          {/* Contact Form */}
-          <div className="animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-            <Card className="border-border/50 bg-card/50 backdrop-blur-sm shadow-elegant">
-              <CardContent className="p-8">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium mb-2">
-                      Full Name *
+        {/* Extended Contact Form */}
+        <div className="max-w-5xl mx-auto animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+          <Card className="border-border/50 bg-card/50 backdrop-blur-sm shadow-elegant">
+            <CardContent className="p-8 md:p-10">
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="grid md:grid-cols-2 gap-8">
+                  {/* Row 1 */}
+                  <div className="space-y-2">
+                    <label htmlFor="fullName" className="flex items-center text-sm font-medium text-foreground gap-2">
+                      <User className="w-4 h-4 text-primary" /> Full Name <span className="text-destructive">*</span>
                     </label>
                     <Input
-                      id="name"
-                      name="name"
-                      value={formData.name}
+                      id="fullName"
+                      name="fullName"
+                      value={formData.fullName}
                       onChange={handleChange}
                       required
                       placeholder="John Doe"
-                      className="bg-background/50"
+                      className="bg-background/50 h-12"
                     />
                   </div>
 
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium mb-2">
-                      Email Address *
+                  <div className="space-y-2">
+                    <label htmlFor="email" className="flex items-center text-sm font-medium text-foreground gap-2">
+                      <Mail className="w-4 h-4 text-primary" /> Corporate Email <span className="text-destructive">*</span>
                     </label>
                     <Input
                       id="email"
@@ -156,51 +244,160 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                       placeholder="john@company.com"
-                      className="bg-background/50"
+                      className="bg-background/50 h-12"
                     />
                   </div>
 
-                  <div>
-                    <label htmlFor="company" className="block text-sm font-medium mb-2">
-                      Company Name
+                  {/* Row 2 */}
+                  <div className="space-y-2">
+                    <label htmlFor="companyName" className="flex items-center text-sm font-medium text-foreground gap-2">
+                      <Building className="w-4 h-4 text-primary" /> Company Name <span className="text-destructive">*</span>
                     </label>
                     <Input
-                      id="company"
-                      name="company"
-                      value={formData.company}
-                      onChange={handleChange}
-                      placeholder="Your Company Inc."
-                      className="bg-background/50"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium mb-2">
-                      Message *
-                    </label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
+                      id="companyName"
+                      name="companyName"
+                      value={formData.companyName}
                       onChange={handleChange}
                       required
-                      placeholder="Tell us about your contract management needs..."
-                      rows={6}
-                      className="bg-background/50"
+                      placeholder="Your Company"
+                      className="bg-background/50 h-12"
                     />
                   </div>
 
-                  <Button
-                    type="submit"
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-6 text-lg rounded-xl shadow-card hover:shadow-elegant transition-all duration-300 hover:scale-105"
+                  <div className="space-y-2">
+                    <label htmlFor="designation" className="flex items-center text-sm font-medium text-foreground gap-2">
+                      <Briefcase className="w-4 h-4 text-primary" /> Designation <span className="text-destructive">*</span>
+                    </label>
+                    <Input
+                      id="designation"
+                      name="designation"
+                      value={formData.designation}
+                      onChange={handleChange}
+                      required
+                      placeholder="Your Role"
+                      className="bg-background/50 h-12"
+                    />
+                  </div>
+
+                  {/* Row 3 */}
+                  <div className="space-y-2">
+                    <label htmlFor="contactNumber" className="flex items-center text-sm font-medium text-foreground gap-2">
+                      <Phone className="w-4 h-4 text-primary" /> Contact Number <span className="text-destructive">*</span>
+                    </label>
+                    <Input
+                      id="contactNumber"
+                      name="contactNumber"
+                      value={formData.contactNumber}
+                      onChange={handleChange}
+                      required
+                      placeholder="+91 XXXXX XXXXX"
+                      className="bg-background/50 h-12"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="location" className="flex items-center text-sm font-medium text-foreground gap-2">
+                      <MapPin className="w-4 h-4 text-primary" /> Location <span className="text-destructive">*</span>
+                    </label>
+                    <Input
+                      id="location"
+                      name="location"
+                      value={formData.location}
+                      onChange={handleChange}
+                      required
+                      placeholder="City, State"
+                      className="bg-background/50 h-12"
+                    />
+                  </div>
+
+                  {/* Row 4 */}
+                  <div className="space-y-2">
+                    <label className="flex items-center text-sm font-medium text-foreground gap-2">
+                      <MessageSquare className="w-4 h-4 text-primary" /> Service Interest <span className="text-destructive">*</span>
+                    </label>
+                    <Select onValueChange={(value) => handleSelectChange("serviceInterest", value)}>
+                      <SelectTrigger className="bg-background/50 h-12">
+                        <SelectValue placeholder="Select Service" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="due_diligence">Automated Due Diligence</SelectItem>
+                        <SelectItem value="contract_review">Contract Review</SelectItem>
+                        <SelectItem value="compliance">Compliance Automation</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="flex items-center text-sm font-medium text-foreground gap-2">
+                      <Globe className="w-4 h-4 text-primary" /> How did you find us?
+                    </label>
+                    <Select onValueChange={(value) => handleSelectChange("referralSource", value)}>
+                      <SelectTrigger className="bg-background/50 h-12">
+                        <SelectValue placeholder="Select Source" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="linkedin">LinkedIn</SelectItem>
+                        <SelectItem value="google">Google Search</SelectItem>
+                        <SelectItem value="referral">Client Referral</SelectItem>
+                        <SelectItem value="social_media">Social Media</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Message */}
+                <div className="space-y-2">
+                  <label htmlFor="message" className="flex items-center text-sm font-medium text-foreground gap-2">
+                    <MessageCircle className="w-4 h-4 text-primary" /> Your Message <span className="text-destructive">*</span>
+                  </label>
+                  <Textarea
+                    id="message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    placeholder="Tell us about your security requirements..."
+                    rows={6}
+                    className="bg-background/50 resize-none"
+                  />
+                </div>
+
+                {/* Terms */}
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="terms"
+                    checked={formData.agreed}
+                    onCheckedChange={handleCheckboxChange}
+                  />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-muted-foreground"
                   >
-                    Send Message
-                    <Send className="ml-2 h-5 w-5" />
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
+                    I agree to the <a href="#" className="text-primary hover:underline">Privacy Policy</a> and <a href="#" className="text-primary hover:underline">Terms & Conditions</a>
+                  </label>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-6 text-lg rounded-xl shadow-card hover:shadow-elegant transition-all duration-300 hover:scale-[1.01]"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" /> Sending...
+                    </>
+                  ) : (
+                    <>
+                      Send Inquiry
+                      <Send className="ml-2 h-5 w-5" />
+                    </>
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </section>
