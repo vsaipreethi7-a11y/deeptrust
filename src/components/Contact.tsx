@@ -375,7 +375,7 @@ const Contact = () => {
                     htmlFor="terms"
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-muted-foreground"
                   >
-                    I agree to the <a href="#" className="text-primary hover:underline">Privacy Policy</a> and <a href="#" className="text-primary hover:underline">Terms & Conditions</a>
+                    I agree to the <a href="/privacy-policy" className="text-primary hover:underline">Privacy Policy</a> and <a href="/terms-conditions" className="text-primary hover:underline">Terms & Conditions</a>
                   </label>
                 </div>
 

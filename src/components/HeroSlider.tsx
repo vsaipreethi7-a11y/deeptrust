@@ -10,7 +10,7 @@ const HeroSlider = () => {
 
   const slides = [
     {
-      title: "AI-Powered Contract Analytics",
+      title: "AI Driven Governance Risk and Compliance Platform for Global Enterprises",
       subtitle: "Transform Your Contract Management",
       description: "Leverage advanced AI and LLMs for intelligent data extraction, risk analysis, and automated contract lifecycle management. Reduce processing time by 90%.",
       image: heroBg1,
@@ -91,21 +91,21 @@ const HeroSlider = () => {
             <div
               key={index}
               className={`transition-all duration-700 ${index === currentSlide
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-10 absolute"
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-10 absolute"
                 }`}
             >
               <div className="mb-4 xl:mb-6 inline-block px-5 xl:px-6 py-2.5 xl:py-3 bg-black/60 text-white backdrop-blur-md rounded-full border border-white/40 text-sm xl:text-base font-semibold animate-fade-in shadow-lg">
                 Next Generation Contract Management
               </div>
 
-              <h2 className="text-xl md:text-2xl xl:text-3xl 2xl:text-4xl text-primary mb-4 xl:mb-6 font-semibold animate-fade-in-up drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
+              <h2 className="text-lg md:text-xl xl:text-2xl text-primary mb-4 xl:mb-6 font-semibold animate-fade-in-up drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
                 {slide.subtitle}
               </h2>
-              <h1 className="text-5xl md:text-7xl xl:text-8xl 2xl:text-9xl font-bold mb-6 xl:mb-8 leading-tight text-white animate-fade-in-up drop-shadow-[0_4px_8px_rgba(0,0,0,0.7)]" style={{ animationDelay: "0.2s" }}>
+              <h1 className="text-4xl md:text-6xl xl:text-7xl font-bold mb-6 xl:mb-8 leading-tight text-white animate-fade-in-up drop-shadow-[0_4px_8px_rgba(0,0,0,0.7)]" style={{ animationDelay: "0.2s" }}>
                 {slide.title}
               </h1>
-              <p className="text-xl md:text-2xl xl:text-3xl 2xl:text-4xl text-white mb-12 xl:mb-16 max-w-4xl xl:max-w-5xl 2xl:max-w-6xl mx-auto animate-fade-in-up drop-shadow-[0_3px_6px_rgba(0,0,0,0.6)] font-medium" style={{ animationDelay: "0.4s" }}>
+              <p className="text-lg md:text-xl xl:text-2xl text-white mb-10 xl:mb-12 max-w-3xl xl:max-w-4xl mx-auto animate-fade-in-up drop-shadow-[0_3px_6px_rgba(0,0,0,0.6)] font-medium" style={{ animationDelay: "0.4s" }}>
                 {slide.description}
               </p>
 
@@ -154,8 +154,8 @@ const HeroSlider = () => {
             key={index}
             onClick={() => goToSlide(index)}
             className={`transition-all duration-300 rounded-full ${index === currentSlide
-                ? "w-12 h-3 bg-primary"
-                : "w-3 h-3 bg-white/40 hover:bg-white/60"
+              ? "w-12 h-3 bg-primary"
+              : "w-3 h-3 bg-white/40 hover:bg-white/60"
               }`}
           />
         ))}

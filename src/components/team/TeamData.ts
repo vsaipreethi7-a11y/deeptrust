@@ -1,5 +1,5 @@
 import Sanat from "@/assets/sanat.png";
-import Kenneth from "@/assets/ken .png";
+import Kenneth from "@/assets/ken.png";
 import Balaji from "@/assets/Balaji.png";
 import Priyal from "@/assets/priya.png";
 import Pranay from "@/assets/pranay.png";

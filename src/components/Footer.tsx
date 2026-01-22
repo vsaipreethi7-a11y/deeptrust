@@ -1,15 +1,45 @@
 import { Facebook, Instagram, Twitter, Linkedin, Mail, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Footer = () => {
   const footerLinks = {
-    Company: ["About", "Services", "AWS Cost Alerts", "Integrations", "Technology"],
-    Products: ["Automated Chatbot", "Data Security", "Virtual Reality", "Communication"],
-    Solution: ["Video & Podcasts", "Webinars", "Case Studies", "Web Analysis", "Web Development"],
-    Resources: ["All Resources", "Blog", "Documents", "Learning Center", "Support", "API"],
+    Company: [
+      { label: "About Us", href: "/#about-us" },
+      { label: "Team", href: "/#team" },
+    ],
+    Offerings: [
+      { label: "For Global Enterprises", href: "/#offerings" },
+      { label: "For MNC Banks", href: "/#offerings" },
+      { label: "For SEZ/FTZ", href: "/#offerings" },
+      { label: "DeepTrust GT API", href: "/#solutions" },
+    ],
+    "Tech Platforms": [
+      { label: "DeepFlow™", href: "/#platforms" },
+      { label: "Pixel-to-Profit™", href: "/#platforms" },
+      { label: "AgenticAI™", href: "/#platforms" },
+      { label: "GRC Sentinel™", href: "/#platforms" },
+      { label: "BorderFlow™", href: "/#platforms" },
+      { label: "InsightForge™", href: "/#platforms" },
+    ],
+    Resources: [
+      { label: "Technology Stack", href: "/#technology" },
+      { label: "Outcomes", href: "/#outcomes" },
+      { label: "Industry Verticals", href: "/#verticals" },
+      { label: "Support", href: "/#contact" },
+    ],
   } as const;
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const scrollToContact = () => {
+    // If not on homepage, navigate to home with hash
+    if (location.pathname !== "/") {
+      navigate("/#contact");
+      return;
+    }
+
     const element = document.getElementById("contact");
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -51,13 +81,13 @@ const Footer = () => {
             <div key={category}>
               <h3 className="font-bold text-lg mb-4">{category}</h3>
               <ul className="space-y-3">
-                {(links as readonly string[]).map((link) => (
-                  <li key={link}>
+                {links.map((link) => (
+                  <li key={link.label}>
                     <a
-                      href="#"
+                      href={link.href}
                       className="text-muted-foreground hover:text-primary transition-colors"
                     >
-                      {link}
+                      {link.label}
                     </a>
                   </li>
                 ))}
@@ -111,7 +141,7 @@ const Footer = () => {
         </div>
 
         <div className="pt-6 border-t border-border/50 text-center text-foreground/80">
-          <p>© Copyright Powered by Web Developer</p>
+          <p>© {new Date().getFullYear()} DEEPTRUST.ONE. All rights reserved.</p>
         </div>
       </div>
     </footer>

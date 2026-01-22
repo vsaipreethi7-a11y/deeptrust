@@ -1,6 +1,7 @@
 
 import * as React from "react";
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -125,17 +126,29 @@ const Navigation = () => {
     return () => window.removeEventListener("resize", measure);
   }, []);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const scrollToSection = (section: string) => {
-    const element = document.getElementById(section.toLowerCase().replace(/\s+/g, "-")) || 
-                    document.getElementById(section.toLowerCase()) ||
-                    document.getElementById(section.replace(/\s+/g, "").toLowerCase());
-    
+    const sectionId = section.toLowerCase().replace(/\s+/g, "-");
+
+    // If not on homepage, navigate to home with hash
+    if (location.pathname !== "/") {
+      navigate(`/#${sectionId}`);
+      return;
+    }
+
+    // Handle homepage scrolling
+    const element = document.getElementById(sectionId) ||
+      document.getElementById(section.toLowerCase()) ||
+      document.getElementById(section.replace(/\s+/g, "").toLowerCase());
+
     if (element) {
       // Offset for fixed header
       const headerOffset = 80;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-  
+
       window.scrollTo({
         top: offsetPosition,
         behavior: "smooth"
@@ -162,7 +175,7 @@ const Navigation = () => {
             <img
               src="/logo.png"
               alt="DEEPTRUST.ONE"
-              className="h-10 md:h-12 w-auto"
+              className="h-14 md:h-16 w-auto"
               onError={(e) => {
                 const el = e.currentTarget as HTMLImageElement;
                 if (el.src.includes("/logo.png")) {
@@ -178,7 +191,7 @@ const Navigation = () => {
                 className="uppercase text-[10px] md:text-xs font-semibold text-foreground/85 whitespace-nowrap mt-0.5 tracking-wider"
                 style={{ width: brandWidth }}
               >
-                 <div className="flex items-center justify-between w-full">
+                <div className="flex items-center justify-between w-full">
                   <span>SPEED</span>
                   <span className="w-1 h-1 rounded-full bg-primary/50" />
                   <span>SCALE</span>
@@ -193,7 +206,7 @@ const Navigation = () => {
           <div className="hidden lg:flex items-center space-x-1">
             <NavigationMenu className="relative z-50">
               <NavigationMenuList>
-                
+
                 <NavigationMenuItem>
                   <NavigationMenuTrigger onClick={(e) => handleLinkClick(e, "outcomes")}>Outcomes</NavigationMenuTrigger>
                   <NavigationMenuContent>
@@ -273,8 +286,8 @@ const Navigation = () => {
                 </NavigationMenuItem>
 
                 <NavigationMenuItem>
-                  <NavigationMenuLink 
-                    className={navigationMenuTriggerStyle()} 
+                  <NavigationMenuLink
+                    className={navigationMenuTriggerStyle()}
                     onClick={(e) => handleLinkClick(e, "about-us")}
                   >
                     About Us

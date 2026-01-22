@@ -186,15 +186,10 @@ const Platforms: React.FC = () => {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center max-w-4xl mx-auto mb-20">
-          <div className="inline-flex items-center justify-center px-4 py-1.5 mb-8 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-xl shadow-[0_0_15px_rgba(var(--primary),0.2)]">
-            <Sparkles size={14} className="text-primary mr-2" />
-            <span className="text-sm font-bold text-primary uppercase tracking-widest">
-              The AI Engine
-            </span>
-          </div>
+
 
           <h2 className="text-4xl md:text-6xl font-black bg-gradient-to-br from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent mb-8 tracking-tight">
-            Our Technology <span className="text-primary">Platforms</span>
+            Technology <span className="text-primary">Platforms</span>
           </h2>
 
           <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed max-w-3xl mx-auto font-light">
@@ -206,8 +201,8 @@ const Platforms: React.FC = () => {
         <div className="max-w-5xl mx-auto">
           <Accordion type="single" collapsible className="w-full space-y-6">
             {platformsData.map((platform, index) => (
-              <AccordionItem 
-                key={index} 
+              <AccordionItem
+                key={index}
                 value={platform.title}
                 className="group border border-white/10 bg-card/10 backdrop-blur-xl rounded-3xl overflow-hidden transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 px-1"
               >
@@ -232,59 +227,59 @@ const Platforms: React.FC = () => {
                         Most ShadCN implementations might put the arrow at the end. */}
                   </div>
                 </AccordionTrigger>
-                
+
                 <AccordionContent className="px-6 pb-8 pt-2">
-                   <div className="pl-[80px] pr-4">
-                      <p className="text-lg text-foreground/90 leading-relaxed mb-8 border-l-2 border-primary/30 pl-4">
-                        {platform.description}
-                      </p>
+                  <div className="pl-[80px] pr-4">
+                    <p className="text-lg text-foreground/90 leading-relaxed mb-8 border-l-2 border-primary/30 pl-4">
+                      {platform.description}
+                    </p>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-8">
-                        {/* Features */}
-                        <div>
-                          <h4 className="flex items-center gap-2 text-xs font-bold text-foreground/70 mb-5 uppercase tracking-widest">
-                            <Zap size={14} className="text-yellow-500" />
-                            Capabilities
-                          </h4>
-                          <div className="flex flex-wrap gap-2">
-                            {platform.features.map((feature, i) => (
-                              <span key={i} className="px-3 py-1.5 rounded-lg bg-primary/5 border border-primary/10 text-xs font-medium text-foreground/80">
-                                {feature}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                         {/* Use Cases */}
-                        <div>
-                          <h4 className="flex items-center gap-2 text-xs font-bold text-foreground/70 mb-5 uppercase tracking-widest">
-                            <ArrowRight size={14} className="text-blue-500" />
-                            Applications
-                          </h4>
-                          <ul className="space-y-3">
-                            {platform.useCases.map((useCase, i) => (
-                              <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground/90">
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0 shadow-[0_0_5px_hsl(var(--primary))]" />
-                                <span>{useCase}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-
-                      {/* Benefits Footer */}
-                      <div className="bg-gradient-to-r from-primary/10 to-transparent rounded-xl p-6 border border-primary/10">
-                        <span className="text-xs font-bold text-primary uppercase tracking-widest block mb-4">Impact</span>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          {platform.benefits.map((benefit, i) => (
-                            <div key={i} className="flex items-start gap-3">
-                              <CheckCircle2 size={18} className="text-emerald-500 mt-0.5 shrink-0" />
-                              <span className="text-sm font-semibold text-foreground/90 leading-tight">{benefit}</span>
-                            </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-8">
+                      {/* Features */}
+                      <div>
+                        <h4 className="flex items-center gap-2 text-xs font-bold text-foreground/70 mb-5 uppercase tracking-widest">
+                          <Zap size={14} className="text-yellow-500" />
+                          Capabilities
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {platform.features.map((feature, i) => (
+                            <span key={i} className="px-3 py-1.5 rounded-lg bg-primary/5 border border-primary/10 text-xs font-medium text-foreground/80">
+                              {feature}
+                            </span>
                           ))}
                         </div>
                       </div>
-                   </div>
+
+                      {/* Use Cases */}
+                      <div>
+                        <h4 className="flex items-center gap-2 text-xs font-bold text-foreground/70 mb-5 uppercase tracking-widest">
+                          <ArrowRight size={14} className="text-blue-500" />
+                          Applications
+                        </h4>
+                        <ul className="space-y-3">
+                          {platform.useCases.map((useCase, i) => (
+                            <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground/90">
+                              <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0 shadow-[0_0_5px_hsl(var(--primary))]" />
+                              <span>{useCase}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+
+                    {/* Benefits Footer */}
+                    <div className="bg-gradient-to-r from-primary/10 to-transparent rounded-xl p-6 border border-primary/10">
+                      <span className="text-xs font-bold text-primary uppercase tracking-widest block mb-4">Impact</span>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {platform.benefits.map((benefit, i) => (
+                          <div key={i} className="flex items-start gap-3">
+                            <CheckCircle2 size={18} className="text-emerald-500 mt-0.5 shrink-0" />
+                            <span className="text-sm font-semibold text-foreground/90 leading-tight">{benefit}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </AccordionContent>
               </AccordionItem>
             ))}

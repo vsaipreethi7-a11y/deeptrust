@@ -39,6 +39,9 @@ const Index = () => {
     };
 
     handleHashScroll();
+
+    window.addEventListener('hashchange', handleHashScroll);
+    return () => window.removeEventListener('hashchange', handleHashScroll);
   }, []);
 
   return (
