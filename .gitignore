@@ -57,3 +57,9 @@ chromedriver.log
 lint_errors.txt
 .env
 lint_errors.txt
+
+.vercel
+.env*.local
+
+*.zip
+*.timestamp-*.mjs

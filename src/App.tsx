@@ -23,6 +23,8 @@ function ScrollToTop() {
   return null;
 }
 
+import { TrafficTracker } from "@/components/TrafficTracker";
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -31,6 +33,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <TrafficTracker />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
