@@ -1,7 +1,7 @@
 
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { initAirtable } from '@/lib/airtable';
+import { sendToAirtable } from '@/lib/airtable';
 import { toast } from "sonner";
 
 
@@ -59,35 +59,34 @@ export const TrafficTracker = () => {
                     console.error('Failed to get IP', e);
                 }
 
-                const table = initAirtable();
-                if (!table) return;
+                const tableName = 'traffic volume';
+                const fields = {
+                    "Visitor ID": visitorId,
+                    "Page URL": window.location.href,
+                    "Page Path": location.pathname,
+                    "Page Title": document.title,
+                    "Referrer": document.referrer || "Direct",
+                    "IP Address": ipAddress,
+                    "Timestamp": new Date().toISOString(),
+                    "Session ID": sessionId,
+                    "Is Repeat Visitor": isRepeatVisitor,
+                    "User Agent": navigator.userAgent,
+                    "Screen": `${window.screen.width}x${window.screen.height}`,
+                    "Device Type": getDeviceType(),
+                };
 
-                await table.create([
-                    {
-                        fields: {
-                            "Visitor ID": visitorId,
-                            "Page URL": window.location.href,
-                            "Page Path": location.pathname,
-                            "Page Title": document.title,
-                            "Referrer": document.referrer || "Direct",
-                            "IP Address": ipAddress,
-                            "Timestamp": new Date().toISOString(),
-                            "Session ID": sessionId,
-                            "Is Repeat Visitor": isRepeatVisitor,
-                            "User Agent": navigator.userAgent,
-                            "Screen": `${window.screen.width}x${window.screen.height}`,
-                            "Device Type": getDeviceType(),
-                        },
-                    },
-                ]);
+                const { success, error } = await sendToAirtable(tableName, fields);
 
-                console.log("Traffic tracked for", location.pathname);
+                if (success) {
+                    console.log(`Traffic tracked successfully in "${tableName}" for ${location.pathname}`);
+                } else {
+                    throw new Error(error);
+                }
 
-            } catch (error) {
-                // Silent fail or log
-                console.error("Tracking Error:", error);
+            } catch (error: any) {
+                console.error("Traffic Tracking Error Details:", error);
                 if (import.meta.env.DEV) {
-                    toast.error("Traffic Tracking Error: " + (error as any)?.message || "Unknown error");
+                    toast.error(`Traffic Tracking Error ("traffic volume"): ${error?.message || "Unknown error"}`);
                 }
             }
         };

@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { sendToAirtable } from "@/lib/airtable";
 import { useToast } from "@/hooks/use-toast";
 
 const Contact = () => {
@@ -47,7 +48,7 @@ const Contact = () => {
     try {
       const AIRTABLE_API_KEY = import.meta.env.VITE_AIRTABLE_API_KEY;
       const AIRTABLE_BASE_ID = import.meta.env.VITE_AIRTABLE_BASE_ID;
-      const AIRTABLE_TABLE_NAME = import.meta.env.VITE_AIRTABLE_TABLE_NAME || "Inquiries";
+      const AIRTABLE_TABLE_NAME = import.meta.env.VITE_AIRTABLE_TABLE_NAME || "Inquires";
 
       if (!AIRTABLE_API_KEY || !AIRTABLE_BASE_ID) {
         console.warn("Airtable credentials missing.");
@@ -76,34 +77,22 @@ const Contact = () => {
         "other": "Other"
       };
 
-      const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${AIRTABLE_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          records: [
-            {
-              fields: {
-                "Name": formData.fullName,
-                "Email": formData.email,
-                "Company": formData.companyName,
-                "Designation": formData.designation,
-                "Phone": formData.contactNumber,
-                "Location": formData.location,
-                "Service Interest": serviceMap[formData.serviceInterest] || formData.serviceInterest,
-                "Source": sourceMap[formData.referralSource] || formData.referralSource,
-                "Message": formData.message,
-                "Status": "New"
-              }
-            }
-          ],
-          typecast: true // This is crucial! It allows creating new select options if they don't exist
-        }),
-      });
+      const submissionData = {
+        "Name": formData.fullName,
+        "Email": formData.email,
+        "Company": formData.companyName,
+        "Designation": formData.designation,
+        "Phone": formData.contactNumber,
+        "Location": formData.location,
+        "Service Interest": serviceMap[formData.serviceInterest] || formData.serviceInterest,
+        "Source": sourceMap[formData.referralSource] || formData.referralSource,
+        "Message": formData.message,
+        "Status": "New"
+      };
 
-      if (response.ok) {
+      const { success, error } = await sendToAirtable(AIRTABLE_TABLE_NAME, submissionData);
+
+      if (success) {
         toast({
           title: "Inquiry Sent Successfully!",
           description: "Thank you for reaching out. We will get back to you shortly.",
@@ -123,19 +112,13 @@ const Contact = () => {
           agreed: false,
         });
       } else {
-        const errorData = await response.json();
-        console.error("Airtable submission error:", JSON.stringify(errorData, null, 2));
-        toast({
-          title: "Submission Failed",
-          description: "Something went wrong. Please try again later.",
-          variant: "destructive"
-        });
+        throw new Error(error);
       }
-    } catch (error) {
-      console.error("Failed to submit to Airtable:", error);
+    } catch (error: any) {
+      console.error("Submission error details:", error);
       toast({
-        title: "Connection Error",
-        description: "Could not connect to the server. Please check your internet connection.",
+        title: "Submission Failed",
+        description: error.message || "Something went wrong. Please try again later.",
         variant: "destructive"
       });
     } finally {
