@@ -175,7 +175,7 @@ const Contact = () => {
                 <Mail className="w-6 h-6" />
               </div>
               <h3 className="font-bold text-lg mb-2">Email Us</h3>
-              <p className="text-muted-foreground text-sm">Sanat@deeptrust.in</p>
+              <p className="text-muted-foreground text-sm">advisor@trustone.consulting</p>
             </CardContent>
           </Card>
 
@@ -185,7 +185,7 @@ const Contact = () => {
                 <Phone className="w-6 h-6" />
               </div>
               <h3 className="font-bold text-lg mb-2">Call Us</h3>
-              <p className="text-muted-foreground text-sm hover:text-primary transition-colors">+91 90040 90839</p>
+              <p className="text-muted-foreground text-sm hover:text-primary transition-colors">+91 9004090839</p>
             </CardContent>
           </Card>
 
@@ -195,7 +195,7 @@ const Contact = () => {
                 <MessageCircle className="w-6 h-6" />
               </div>
               <h3 className="font-bold text-lg mb-2">WhatsApp</h3>
-              <p className="text-green-500 text-sm font-medium">+91 90040 90839</p>
+              <p className="text-green-500 text-sm font-medium">+91 9004090839</p>
             </CardContent>
           </Card>
 
@@ -205,7 +205,7 @@ const Contact = () => {
                 <MapPin className="w-6 h-6" />
               </div>
               <h3 className="font-bold text-lg mb-2">Visit Us</h3>
-              <p className="text-muted-foreground text-sm">123 AI Technology Drive<br />San Francisco, CA 94105</p>
+              <p className="text-muted-foreground text-sm">Parinee Crescenzo,<br />G Block BKC, Bandra East,<br />Mumbai, Maharashtra 400051</p>
             </CardContent>
           </Card>
         </div>

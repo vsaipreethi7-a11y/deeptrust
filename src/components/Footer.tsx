@@ -128,8 +128,8 @@ const Footer = () => {
         <div className="bg-muted/25 border border-border/60 rounded-3xl p-6 md:p-8 mb-10 shadow-[0_10px_30px_-12px_rgba(10,10,20,0.5)]">
           <div className="grid md:grid-cols-3 gap-6 items-center">
             <div className="md:col-span-1">
-              <h4 className="text-xl font-semibold">Stay Updated</h4>
-              <p className="text-muted-foreground mt-2">Get the latest updates on our innovations and job opportunities.</p>
+              <h4 className="text-xl font-semibold">Newsletter</h4>
+              <p className="text-muted-foreground mt-2">Be the first to hear about our latest promotions, new services and more.</p>
             </div>
             <div className="md:col-span-2">
               <form className="flex gap-3">

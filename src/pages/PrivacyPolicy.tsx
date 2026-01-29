@@ -223,24 +223,25 @@ const PrivacyPolicy = () => {
                             <div className="grid md:grid-cols-2 gap-8">
                                 <div className="space-y-2">
                                     <h3 className="text-lg font-semibold text-white">Email Us</h3>
-                                    <a href="mailto:Sanat@deeptrust.in" className="text-brand-primary hover:underline">Sanat@deeptrust.in</a>
+                                    <a href="mailto:advisor@trustone.consulting" className="text-brand-primary hover:underline">advisor@trustone.consulting</a>
                                 </div>
 
                                 <div className="space-y-2">
                                     <h3 className="text-lg font-semibold text-white">Call Us</h3>
-                                    <a href="tel:+919004090839" className="text-gray-300 hover:text-white transition-colors">+91 90040 90839</a>
+                                    <a href="tel:+919004090839" className="text-gray-300 hover:text-white transition-colors">+91 9004090839</a>
                                 </div>
 
                                 <div className="space-y-2">
                                     <h3 className="text-lg font-semibold text-white">WhatsApp</h3>
-                                    <a href="https://wa.me/919004090839" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline">+91 90040 90839</a>
+                                    <a href="https://wa.me/919004090839" target="_blank" rel="noopener noreferrer" className="text-brand-primary hover:underline">+91 9004090839</a>
                                 </div>
 
                                 <div className="space-y-2">
                                     <h3 className="text-lg font-semibold text-white">Visit Us</h3>
                                     <p className="text-gray-300">
-                                        123 AI Technology Drive<br />
-                                        San Francisco, CA 94105
+                                        Parinee Crescenzo,<br />
+                                        G Block BKC, Bandra East,<br />
+                                        Mumbai, Maharashtra 400051
                                     </p>
                                 </div>
                             </div>
